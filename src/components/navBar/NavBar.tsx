@@ -24,7 +24,7 @@ function Navbar() {
           <Link to='/home' className='text-2xl font-bold uppercase'>Blog Pessoal</Link>
 
           <div className='flex gap-4'>
-            <div className='hover:text-indigo-300 uppercase'>Postagens</div>
+            <Link to='/postagens' className='hover:text-indigo-300 uppercase'>Postagens</Link>
             <Link to='/temas' className='hover:text-indigo-300 uppercase'>Temas</Link>
             <Link to='/cadastroTema' className='hover:text-indigo-300 uppercase'>Cadastrar tema</Link>
             <div className='hover:text-indigo-300 uppercase'>Perfil</div>
