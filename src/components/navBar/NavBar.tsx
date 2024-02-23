@@ -27,7 +27,7 @@ function Navbar() {
             <Link to='/postagens' className='hover:text-indigo-300 uppercase'>Postagens</Link>
             <Link to='/temas' className='hover:text-indigo-300 uppercase'>Temas</Link>
             <Link to='/cadastroTema' className='hover:text-indigo-300 uppercase'>Cadastrar tema</Link>
-            <div className='hover:text-indigo-300 uppercase'>Perfil</div>
+            <Link to='/perfil' className='hover:text-indigo-300 uppercase'>Perfil</Link>
             <Link to='' onClick={logout} className='hover:text-indigo-300 uppercase'>Sair</Link>
           </div>
         </div>
