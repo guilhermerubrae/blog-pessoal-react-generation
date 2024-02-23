@@ -1,129 +1,86 @@
-import { ChangeEvent, useContext, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { AuthContext } from '../../../contexts/AuthContext';
-import Tema from '../../../models/Tema';
-import { atualizar, buscar, cadastrar } from '../../../services/Service';
+import React, { useContext, useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router'
+import { AuthContext } from '../../../contexts/AuthContext'
+import Tema from '../../../models/Tema'
+import { buscar, deletar } from '../../../services/Service'
+import { toastAlerta } from '../../../utils/toastAlerta'
 
-function FormularioTema() {
-  const [tema, setTema] = useState<Tema>({} as Tema);
+function DeletarTema() {
+    const [tema, setTema] = useState<Tema>({} as Tema)
 
-  const navigate = useNavigate();
+    const navigate = useNavigate()
 
-  const { id } = useParams<{ id: string }>();
+    const { id } = useParams<{ id: string }>()
 
-  const { usuario, handleLogout } = useContext(AuthContext);
-  const token = usuario.token;
+    const { usuario, handleLogout } = useContext(AuthContext)
+    const token = usuario.token
 
-  async function buscarPorId(id: string) {
-    await buscar(`/temas/${id}`, setTema, {
-      headers: {
-        Authorization: token,
-      },
-    });
-  }
-
-  useEffect(() => {
-    if (id !== undefined) {
-      buscarPorId(id)
+    async function buscarPorId(id: string) {
+        try {
+            await buscar(`/temas/${id}`, setTema, {
+                headers: {
+                    'Authorization': token
+                }
+            })
+        } catch (error: any) {
+            if (error.toString().includes('403')) {
+                toastAlerta('O token expirou, favor logar novamente', 'info')
+                handleLogout()
+            }
+        }
     }
-  }, [id])
 
-  function atualizarEstado(e: ChangeEvent<HTMLInputElement>) {
-    setTema({
-      ...tema,
-      [e.target.name]: e.target.value
-    })
+    useEffect(() => {
+        if (token === '') {
+            toastAlerta('Você precisa estar logado', 'info')
+            navigate('/login')
+        }
+    }, [token])
 
-    console.log(JSON.stringify(tema))
-  }
+    useEffect(() => {
+        if (id !== undefined) {
+            buscarPorId(id)
+        }
+    }, [id])
 
-  async function gerarNovoTema(e: ChangeEvent<HTMLFormElement>) {
-    e.preventDefault()
+    function retornar() {
+        navigate("/temas")
+    }
 
-    if (id !== undefined) {
-      try {
-        await atualizar(`/temas`, tema, setTema, {
-          headers: {
-            'Authorization': token
-          }
-        })
+    async function deletarTema() {
+        try {
+            await deletar(`/temas/${id}`, {
+                headers: {
+                    'Authorization': token
+                }
+            })
 
-        alert('Tema atualizado com sucesso')
+            toastAlerta('Tema apagado com sucesso', 'sucesso')
+
+        } catch (error) {
+            toastAlerta('Erro ao apagar o Tema', 'erro')
+        }
+
         retornar()
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (error: any) {
-        if (error.toString().includes('403')) {
-          alert('O token expirou, favor logar novamente')
-          handleLogout()
-        } else {
-          alert('Erro ao atualizar o Tema')
-        }
-
-      }
-
-    } else {
-      try {
-        await cadastrar(`/temas`, tema, setTema, {
-          headers: {
-            'Authorization': token
-          }
-        })
-
-        alert('Tema cadastrado com sucesso')
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (error: any) {
-        if (error.toString().includes('403')) {
-          alert('O token expirou, favor logar novamente')
-          handleLogout()
-        } else {
-          alert('Erro ao cadastrado o Tema')
-        }
-      }
     }
+    return (
+        <div className='container w-1/3 mx-auto'>
+            <h1 className='text-4xl text-center my-4'>Deletar tema</h1>
 
-    retornar()
-  }
+            <p className='text-center font-semibold mb-4'>Você tem certeza de que deseja apagar o tema a seguir?</p>
 
-  function retornar() {
-    navigate("/temas")
-  }
-
-  useEffect(() => {
-    if (token === '') {
-      alert('Você precisa estar logado');
-      navigate('/login');
-    }
-  }, [token]);
-
-  return (
-    <div className="container flex flex-col items-center justify-center mx-auto">
-      <h1 className="text-4xl text-center my-8">
-        {id === undefined ? 'Cadastre um novo tema' : 'Editar tema'}
-      </h1>
-
-      <form className="w-1/2 flex flex-col gap-4" onSubmit={gerarNovoTema}>
-        <div className="flex flex-col gap-2">
-          <label htmlFor="descricao">Descrição do tema</label>
-          <input
-            type="text"
-            placeholder="Descrição"
-            name='descricao'
-            className="border-2 border-slate-700 rounded p-2"
-            value={tema.descricao}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => atualizarEstado(e)}
-          />
+            <div className='border flex flex-col rounded-2xl overflow-hidden justify-between'>
+                <header className='py-2 px-6 bg-indigo-600 text-white font-bold text-2xl'>Tema</header>
+                <p className='p-8 text-3xl bg-slate-200 h-full'>{tema.descricao}</p>
+                <div className="flex">
+                    <button className='text-slate-100 bg-red-400 hover:bg-red-600 w-full py-2' onClick={retornar}>Não</button>
+                    <button className='w-full text-slate-100 bg-indigo-400 hover:bg-indigo-600 flex items-center justify-center' onClick={deletarTema}>
+                        Sim
+                    </button>
+                </div>
+            </div>
         </div>
-        <button
-          className="rounded text-slate-100 bg-indigo-400 hover:bg-indigo-800 w-1/2 py-2 mx-auto block"
-          type="submit"
-        >
-          {id === undefined ? 'Cadastrar' : 'Editar'}
-        </button>
-      </form>
-    </div>
-  );
+    )
 }
 
-export default FormularioTema;
+export default DeletarTema

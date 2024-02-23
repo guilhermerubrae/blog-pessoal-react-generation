@@ -1,37 +1,43 @@
 import React, { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../contexts/AuthContext'
+import { toastAlerta } from '../../utils/toastAlerta'
+
 
 function Navbar() {
   const navigate = useNavigate()
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { usuario, handleLogout } = useContext(AuthContext)
+    const { usuario, handleLogout } = useContext(AuthContext)
 
-  function logout() {
-      handleLogout()
-      alert('Usuário deslogado com sucesso')
-      navigate('/login')
-  }
+    function logout() {
+        handleLogout()
+        toastAlerta('Usuário deslogado com sucesso', 'info')
+        navigate('/login')
+    }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  let navbarComponent
+    let navbarComponent
+
+    if(usuario.token !== "") {
+      navbarComponent = (
+        <div className='w-full bg-blue-900 text-white flex justify-center py-4'>
+        <div className="container flex justify-between text-lg">
+            <Link to='/home' className='text-2xl font-bold uppercase'>Blog Pessoal</Link>
+
+            <div className='flex gap-4'>
+              <Link to='/postagens' className='hover:underline'>Postagens</Link>
+              <Link to='/temas' className='hover:underline'>Temas</Link>
+              <Link to='/cadastroTema' className='hover:underline'>Cadastrar tema</Link>
+              <Link to='/perfil' className='hover:underline'>Perfil</Link>
+              <Link to='' onClick={logout} className='hover:underline'>Sair</Link>
+            </div>
+          </div>
+        </div>
+      )
+    }
 
   return (
     <>
-      <div className='w-full bg-blue-900 text-white flex justify-center py-4'>
-        <div className="container flex justify-between text-lg">
-          <Link to='/home' className='text-2xl font-bold uppercase'>Blog Pessoal</Link>
-
-          <div className='flex gap-4'>
-            <Link to='/postagens' className='hover:text-indigo-300 uppercase'>Postagens</Link>
-            <Link to='/temas' className='hover:text-indigo-300 uppercase'>Temas</Link>
-            <Link to='/cadastroTema' className='hover:text-indigo-300 uppercase'>Cadastrar tema</Link>
-            <Link to='/perfil' className='hover:text-indigo-300 uppercase'>Perfil</Link>
-            <Link to='' onClick={logout} className='hover:text-indigo-300 uppercase'>Sair</Link>
-          </div>
-        </div>
-      </div>
+      {navbarComponent}
     </>
   )
 }

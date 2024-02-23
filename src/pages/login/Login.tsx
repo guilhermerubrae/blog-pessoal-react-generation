@@ -1,4 +1,4 @@
-import { ChangeEvent, useContext, useEffect, useState } from 'react';
+import React, { ChangeEvent, useContext, useEffect, useState } from 'react';
 import './Login.css';
 
 import { Link, useNavigate } from 'react-router-dom';
@@ -8,8 +8,7 @@ import UsuarioLogin from '../../models/UsuarioLogin';
 import { RotatingLines } from 'react-loader-spinner';
 
 function Login() {
-  // eslint-disable-next-line prefer-const
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [usuarioLogin, setUsuarioLogin] = useState<UsuarioLogin>(
     {} as UsuarioLogin
@@ -23,7 +22,6 @@ function Login() {
     if (usuario.token !== "") {
         navigate('/home')
     }
-// eslint-disable-next-line react-hooks/exhaustive-deps
 }, [usuario])
 
 function atualizarEstado(e: ChangeEvent<HTMLInputElement>) {
