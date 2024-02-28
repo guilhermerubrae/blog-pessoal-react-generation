@@ -1,11 +1,11 @@
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../contexts/AuthContext'
-import { toastAlerta } from '../../utils/toastAlerta'
+import { toastAlerta } from '../../util/toastAlerta'
 
 
 function Navbar() {
-  const navigate = useNavigate()
+  let navigate = useNavigate()
 
     const { usuario, handleLogout } = useContext(AuthContext)
 
@@ -19,16 +19,16 @@ function Navbar() {
 
     if(usuario.token !== "") {
       navbarComponent = (
-        <div className='w-full bg-blue-900 text-white flex justify-center py-4'>
-        <div className="container flex justify-between text-lg">
+        <div className='w-full bg-lime-900 text-white flex justify-center py-4'>
+          <div className="container flex justify-between text-lg">
             <Link to='/home' className='text-2xl font-bold uppercase'>Blog Pessoal</Link>
 
             <div className='flex gap-4'>
-              <Link to='/postagens' className='hover:underline'>Postagens</Link>
-              <Link to='/temas' className='hover:underline'>Temas</Link>
-              <Link to='/cadastroTema' className='hover:underline'>Cadastrar tema</Link>
-              <Link to='/perfil' className='hover:underline'>Perfil</Link>
-              <Link to='' onClick={logout} className='hover:underline'>Sair</Link>
+              <Link to='/postagens' className='hover:text-slate-900'>Postagens</Link>
+              <Link to='/temas' className='hover:text-slate-900'>Temas</Link>
+              <Link to='/cadastroTema' className='hover:text-slate-900'>Cadastrar tema</Link>
+              <Link to='/perfil' className='hover:text-slate-900'>Perfil</Link>
+              <Link to='' onClick={logout} className='hover:text-slate-900'>Sair</Link>
             </div>
           </div>
         </div>

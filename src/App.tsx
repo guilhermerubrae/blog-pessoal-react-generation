@@ -1,12 +1,11 @@
-import React from 'react';
 import './App.css';
 
 import Navbar from './components/navBar/NavBar';
 import Footer from './components/footer/Footer';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Login from './pages/login/Login';
-import Cadastro from './pages/cadastro/Cadastro';
-import Home from './pages/home/Home';
+import Login from './paginas/login/Login';
+import Cadastro from './paginas/cadastro/Cadastro';
+import Home from './paginas/home/Home';
 import { AuthProvider } from './contexts/AuthContext';
 import ListaTemas from './components/temas/listaTemas/ListaTemas';
 import FormularioTema from './components/temas/formularioTema/FormularioTema';
@@ -14,13 +13,30 @@ import DeletarTema from './components/temas/deletarTema/DeletarTema';
 import ListaPostagens from './components/postagens/listaPostagens/ListaPostagens';
 import FormularioPostagem from './components/postagens/formularioPostagem/FormularioPostagem';
 import DeletarPostagem from './components/postagens/deletarPostagem/DeletarPostagem';
-import Perfil from './pages/perfil/Perfil';
+import Perfil from './paginas/perfil/Perfil';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
+const contextClass = {
+  success: "bg-blue-600",
+  error: "bg-red-600",
+  info: "bg-lime-400",
+  warning: "bg-orange-400",
+  default: "bg-indigo-600",
+  colored: "bg-white-600 font-green-500",
+};
 
 function App() {
   return (
     <>
-    <AuthProvider>
+      <AuthProvider>
+      <ToastContainer toastClassName={(context) =>
+          contextClass[context?.type || "default"] +
+          " relative flex p-1 min-h-10 rounded-md justify-between overflow-hidden cursor-pointer"
+        }
+        bodyClassName={() => "text-sm font-white font-med block p-3"}
+        position="bottom-left"
+        autoClose={3000} />
         <BrowserRouter>
           <Navbar />
           <div className='min-h-[80vh]'>
@@ -42,8 +58,9 @@ function App() {
           </div>
           <Footer />
         </BrowserRouter>
-        </AuthProvider>
+      </AuthProvider>
     </>
   );
 }
+
 export default App;

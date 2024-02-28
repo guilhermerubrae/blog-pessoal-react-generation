@@ -1,9 +1,8 @@
-import { createContext, ReactNode, useState } from "react"
+import { createContext, ReactNode, useState } from "react";
 
-import UsuarioLogin from "../models/UsuarioLogin"
+import UsuarioLogin from "../models/UsuarioLogin";
 import { login } from "../services/Service"
-import { toastAlerta } from "../utils/toastAlerta"
-// import { toastAlerta } from "../utils/toastAlerta"
+import { toastAlerta } from "../util/toastAlerta";
 
 interface AuthContextProps {
     usuario: UsuarioLogin
@@ -18,29 +17,27 @@ interface AuthProviderProps {
 
 export const AuthContext = createContext({} as AuthContextProps)
 
-export function AuthProvider({ children }: AuthProviderProps) {
-
+export function AuthProvider({children}: AuthProviderProps) {
     const [usuario, setUsuario] = useState<UsuarioLogin>({
         id: 0,
         nome: "",
         usuario: "",
         senha: "",
         foto: "",
-        token: ""
+        token: ""        
     })
 
     const [isLoading, setIsLoading] = useState(false)
 
     async function handleLogin(userLogin: UsuarioLogin) {
         setIsLoading(true)
-        try {
-            await login(`/usuarios/logar`, userLogin, setUsuario)
-            toastAlerta('Você precisa estar logado', 'info');
+        try{
+            await login('usuarios/logar', userLogin, setUsuario)
+            toastAlerta("Usuário logado com sucesso", 'info')
             setIsLoading(false)
-
         } catch (error) {
             console.log(error)
-            toastAlerta('Você precisa estar logado', 'info');
+            toastAlerta("Dados do usuário inconsistentes", 'info')
             setIsLoading(false)
         }
     }
@@ -57,8 +54,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
 
     return (
-        <AuthContext.Provider value={{ usuario, handleLogin, handleLogout, isLoading }}>
+        <AuthContext.Provider value={{usuario, handleLogin, handleLogout, isLoading}}>
             {children}
         </AuthContext.Provider>
     )
+
 }
+
