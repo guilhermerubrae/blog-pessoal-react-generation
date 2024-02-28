@@ -28,6 +28,7 @@ function Footer() {
     )
   }
 
+  
   return (
     <>
       {footerComponent}
